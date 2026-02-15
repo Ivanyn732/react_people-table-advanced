@@ -8,7 +8,7 @@ type SortField = 'name' | 'sex' | 'born' | 'died';
 
 type Props = {
   people: Person[];
-  // allPeople: Person[];
+  allPeople: Person[];
   selectedSlug?: string;
   updateSort: (field: SortField) => void;
 };
@@ -16,6 +16,7 @@ type Props = {
 export const PeopleTable: React.FC<Props> = ({
   updateSort,
   people,
+  allPeople,
   selectedSlug,
 }) => {
   const location = useLocation();
@@ -93,8 +94,10 @@ export const PeopleTable: React.FC<Props> = ({
 
       <tbody>
         {people.map(person => {
-          const mother = people.find(p => p.name === person.motherName) || null;
-          const father = people.find(p => p.name === person.fatherName) || null;
+          const mother =
+            allPeople.find(p => p.name === person.motherName) || null;
+          const father =
+            allPeople.find(p => p.name === person.fatherName) || null;
 
           return (
             <tr

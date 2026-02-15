@@ -162,7 +162,7 @@ export const PeoplePage = () => {
                   updateSort={updateSort}
                   people={peopleAfterSort}
                   selectedSlug={selectedSlug}
-                  // allPeople={people}
+                  allPeople={people}
                 />
               )}
             </div>

@@ -21,7 +21,7 @@ export const SearchLink: React.FC<Props> = ({
   ...props // all usual Link props like `className`, `style` and `id`
 }) => {
   const [searchParams] = useSearchParams();
-  const pathname = slug ? `/people/${slug}` : location.pathname;
+  const pathname = slug ? `/people/${slug}` : undefined;
 
   return (
     <Link
