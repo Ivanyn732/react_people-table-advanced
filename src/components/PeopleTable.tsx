@@ -1,23 +1,39 @@
 import classNames from 'classnames';
 import { Person } from '../types';
 import { SearchLink } from './SearchLink';
-import { useParams } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 
 /* eslint-disable jsx-a11y/control-has-associated-label */
 type SortField = 'name' | 'sex' | 'born' | 'died';
 
 type Props = {
   people: Person[];
-  allPeople: Person[];
+  // allPeople: Person[];
+  selectedSlug?: string;
   updateSort: (field: SortField) => void;
 };
 
 export const PeopleTable: React.FC<Props> = ({
   updateSort,
   people,
-  allPeople,
+  selectedSlug,
 }) => {
-  const { slug: selectedSlug } = useParams();
+  const location = useLocation();
+
+  const searchParamsObj: Record<string, string | string[] | null> = {};
+  const urlParams = new URLSearchParams(location.search);
+
+  urlParams.forEach((value, key) => {
+    if (searchParamsObj[key]) {
+      if (Array.isArray(searchParamsObj[key])) {
+        (searchParamsObj[key] as string[]).push(value);
+      } else {
+        searchParamsObj[key] = [searchParamsObj[key] as string, value];
+      }
+    } else {
+      searchParamsObj[key] = value;
+    }
+  });
 
   return (
     <table
@@ -77,10 +93,8 @@ export const PeopleTable: React.FC<Props> = ({
 
       <tbody>
         {people.map(person => {
-          const mother =
-            allPeople.find(p => p.name === person.motherName) || null;
-          const father =
-            allPeople.find(p => p.name === person.fatherName) || null;
+          const mother = people.find(p => p.name === person.motherName) || null;
+          const father = people.find(p => p.name === person.fatherName) || null;
 
           return (
             <tr
@@ -93,7 +107,7 @@ export const PeopleTable: React.FC<Props> = ({
               <td>
                 <SearchLink
                   slug={person.slug}
-                  params={{}}
+                  params={searchParamsObj}
                   className={classNames({
                     'has-text-danger': person.sex === 'f',
                   })}
@@ -108,7 +122,7 @@ export const PeopleTable: React.FC<Props> = ({
                 {mother ? (
                   <SearchLink
                     slug={mother.slug}
-                    params={{}}
+                    params={searchParamsObj}
                     className={classNames({
                       'has-text-danger': mother.sex === 'f',
                     })}
@@ -123,7 +137,7 @@ export const PeopleTable: React.FC<Props> = ({
                 {father ? (
                   <SearchLink
                     slug={father.slug}
-                    params={{}}
+                    params={searchParamsObj}
                     className={classNames({
                       '-': father.sex === 'm',
                     })}

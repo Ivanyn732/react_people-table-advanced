@@ -1,7 +1,7 @@
 import { PeopleFilters } from './PeopleFilters';
 import { Loader } from './Loader';
 import { PeopleTable } from './PeopleTable';
-import { useSearchParams } from 'react-router-dom';
+import { useParams, useSearchParams } from 'react-router-dom';
 import { getSearchWith } from '../utils/searchHelper';
 import { useEffect, useState } from 'react';
 import { Person } from '../types';
@@ -21,6 +21,8 @@ export const PeoplePage = () => {
   const sort = searchParams.get('sort');
   const order = searchParams.get('order');
   const centuries = searchParams.getAll('centuries');
+
+  const { slug: selectedSlug } = useParams<{ slug: string }>();
 
   useEffect(() => {
     setIsLoading(true);
@@ -134,7 +136,7 @@ export const PeoplePage = () => {
       <div className="block">
         <div className="columns is-desktop is-flex-direction-row-reverse">
           <div className="column is-7-tablet is-narrow-desktop">
-            <PeopleFilters />
+            {!isLoading && !error && people.length > 0 && <PeopleFilters />}
           </div>
 
           <div className="column">
@@ -159,7 +161,8 @@ export const PeoplePage = () => {
                 <PeopleTable
                   updateSort={updateSort}
                   people={peopleAfterSort}
-                  allPeople={people}
+                  selectedSlug={selectedSlug}
+                  // allPeople={people}
                 />
               )}
             </div>
